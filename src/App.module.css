@@ -1,0 +1,72 @@
+.App {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.calculatorBody {
+  margin: 10px;
+  padding: 5px;
+  background-color: lightblue;
+  height: 350px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.calculatorDisplay {
+  background-color: white;
+  width: 95%;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.expression, .result {
+  width: inherit;
+  height: 50%;
+  display: flex;
+  justify-content: left;
+}
+
+.calculatorButtons {
+  display: flex;
+  width: 95%;
+  height: 200px;
+}
+
+.numbers {
+  display: flex;
+  flex-wrap: wrap;
+  height: inherit;
+  width: 60%;
+}
+
+.operators {
+  display: flex;
+  flex-wrap: wrap;
+  width: 40%;
+}
+
+.btns {
+  margin: 2px;
+  width: 40px;
+  height: 40px;
+}
+
+.specialButtons {
+  width: 95%;
+  display: flex;
+  justify-content: left;
+}
+
+.btnSpecial {
+  height: fit-content;
+  width: fit-content;
+  margin: 2px;
+}
+
