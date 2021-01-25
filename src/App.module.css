@@ -69,4 +69,8 @@
   width: fit-content;
   margin: 2px;
 }
+.inputElement {
+  width: 100%;
+  outline: none;
+}
 
