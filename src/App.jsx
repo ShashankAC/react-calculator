@@ -1,16 +1,21 @@
 import React from 'react'
-import styles from './App.module.css';
+import styles from './App.module.css'
+import { connect } from 'react-redux'
+import { addCalculation } from './store/actions/calcActions'
 
 class App extends React.Component {
-    
-  state = {
-    buttonList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "<-", "C",
-    "+", "-", "X", "/",
-    "CE", "(", ")", "="],
-    expression: [],
-    result: 0,
-    error: '',
-    intermediateResult: 0
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      buttonList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "<-", "C",
+      "+", "-", "X", "/",
+      "CE", "(", ")", "="],
+      expression: [],
+      result: 0,
+      error: '',
+      intermediateResult: 0
+    }
   }
 
   handleKeyPress = (event) => {
@@ -145,7 +150,9 @@ class App extends React.Component {
       let exp = [...expression]
       
       exp = this.joinNumbers(exp)
-      // console.log(exp, "after joining numbers")
+      let history = this.props.calculations.calc
+      console.log(history)
+      // this.props.onAddCalc({ history: })
       let positionOfInnerOpenBracket = 0
       let positionOfInnerMostClosedBracket = 0
       if(exp[0] !== "(") {
@@ -382,4 +389,12 @@ doOp = (a,b, op) => {
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  calculations: state.calc
+})
+
+const mapDispatchToProps = {
+  onAddCalc: addCalculation
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

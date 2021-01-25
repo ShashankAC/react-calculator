@@ -3,11 +3,35 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import storageSession from 'redux-persist/lib/storage/session'
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistStore, persistReducer } from 'redux-persist'
+import { combineReducers, createStore } from 'redux';
+import reducer from './store/reducers/calcReducers'
+
+const allReducers = combineReducers({
+  calc: reducer
+})
+
+const persistConfig = {
+  key: 'root',
+  storage: storageSession,
+}
+
+const persistedReducer = persistReducer(persistConfig, allReducers)
+
+export const store = createStore(persistedReducer)
+
+const persistor = persistStore(store)
+
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
+  </Provider>,
   document.getElementById('root')
 );
 
