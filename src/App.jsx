@@ -2,20 +2,98 @@ import React from 'react'
 import styles from './App.module.css';
 
 class App extends React.Component {
-  
-    state = {
-      buttonList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "<-", "C",
-      "+", "-", "X", "/",
-      "CE", "(", ")", "="],
-      expression: [],
-      result: 0,
-      error: '',
-      intermediateResult: 0
-    }
+    
+  state = {
+    buttonList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "<-", "C",
+    "+", "-", "X", "/",
+    "CE", "(", ")", "="],
+    expression: [],
+    result: 0,
+    error: '',
+    intermediateResult: 0
+  }
 
   handleKeyPress = (event) => {
-    console.log(event.keyCode)
-    console.log(event.key)
+    let code = event.key || event.which
+    let exp = [...this.state.expression]
+    switch(code) {
+      case "1":
+        exp.push(1)
+        this.setState({expression: exp})
+        break
+      case "2":
+        exp.push(2)
+        this.setState({expression: exp})
+        break
+      case "3":
+        exp.push(3)
+        this.setState({expression: exp})
+        break
+      case "4":
+        exp.push(4)
+        this.setState({expression: exp})
+        break
+      case "5":
+        exp.push(5)
+        this.setState({expression: exp})
+        break
+      case "6":
+        exp.push(6)
+        this.setState({expression: exp})
+        break
+      case "7":
+        exp.push(7)
+        this.setState({expression: exp})
+        break
+      case "8":
+        exp.push(8)
+        this.setState({expression: exp})
+        break
+      case "9":
+        exp.push(9)
+        this.setState({expression: exp})
+        break
+      case "0":
+        exp.push(0)
+        this.setState({expression: exp})
+        break
+      case "+":
+        exp.push("+")
+        this.setState({expression: exp})
+        break
+      case "-":
+        exp.push("-")
+        this.setState({expression: exp})
+        break
+      case "*":
+        exp.push("*")
+        this.setState({expression: exp})
+        break
+      case "/":
+        exp.push("/")
+        this.setState({expression: exp})
+        break
+      case "Enter":
+        this.evaluate(this.state.expression)
+        break
+      case "=":
+        this.evaluate(this.state.expression)
+        break
+      case "(":
+        exp.push("(")
+        this.setState({expression: exp})
+        break
+      case ")":
+        exp.push(")")
+        this.setState({expression: exp})
+        break
+      default:
+        break
+    }
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyPress)
   }
 
   handleClick = (event) => {
@@ -67,7 +145,7 @@ class App extends React.Component {
       let exp = [...expression]
       
       exp = this.joinNumbers(exp)
-      console.log(exp, "after joining numbers")
+      // console.log(exp, "after joining numbers")
       let positionOfInnerOpenBracket = 0
       let positionOfInnerMostClosedBracket = 0
       if(exp[0] !== "(") {
@@ -90,7 +168,7 @@ class App extends React.Component {
       for(let i = positionOfInnerOpenBracket+1; i < positionOfInnerMostClosedBracket; i++) {
         smallestExp.push(exp[i])
       }
-      console.log(smallestExp, "Input to calculate()")
+      // console.log(smallestExp, "Input to calculate()")
       this.calculate(smallestExp, () => {
         let intResult = this.state.intermediateResult
         exp.splice(positionOfInnerOpenBracket, positionOfInnerMostClosedBracket-positionOfInnerOpenBracket+1, intResult)
@@ -146,7 +224,6 @@ class App extends React.Component {
   calculate = (exp, cb) => {
     let currentExp = [...exp]
     let isSin = false, isCos = false, isTan = false
-    console.log(currentExp, "input to calculate() in  calculate()")
     if(currentExp[0] === "sin") {
       isSin = true
     } 
@@ -253,7 +330,7 @@ doOp = (a,b, op) => {
         <div className={styles.calculatorBody}>
           <div className={styles.calculatorDisplay}>
             <div className={styles.expression}>
-              <p onKeyPress={this.handleKeyPress}>{this.state.expression}</p>
+              {this.state.expression}
             </div>
             <div className={styles.result}>
               {this.state.error || this.state.result}
@@ -270,15 +347,18 @@ doOp = (a,b, op) => {
             <div className={styles.numbers}>
               {this.state.buttonList.map((button, i) => (
                 typeof(button) === "number" ?
-                <button key = {i} 
+                <button id={`${button}`}
+                        key = {i} 
                         className={styles.btns} 
                         name={button} value={button} 
                         onClick={this.handleClick}
-                        >{button}</button> : null
+                        >{button}
+                </button> : null
               ))}
               {this.state.buttonList.map((button, i) => (
                 button === "(" || button === ")" ?
-                <button key = {i} 
+                <button id={`${button}`}
+                        key = {i} 
                         className={styles.btns} 
                         name={button} value={button} 
                         onClick={this.handleClick}
@@ -288,7 +368,8 @@ doOp = (a,b, op) => {
             <div className={styles.operators}>
               {this.state.buttonList.map((button, i) => (
                   typeof(button) !== "number" && button !== "(" && button !== ")" ?
-                  <button key = {i} 
+                  <button id={`${button}`}
+                          key = {i} 
                           className={styles.btns} 
                           name={button} value={button} 
                           onClick={this.handleClick}>{button}</button> : null
