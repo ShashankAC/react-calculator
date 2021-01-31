@@ -64,6 +64,10 @@
   justify-content: left;
 }
 
+.history {
+  width: 80px;
+}
+
 .btnSpecial {
   height: fit-content;
   width: fit-content;

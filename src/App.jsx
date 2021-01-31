@@ -1,65 +1,89 @@
 import React from 'react'
 import styles from './App.module.css'
-import { connect } from 'react-redux'
-import { addCalculation } from './store/actions/calcActions'
+import { evaluate } from 'mathjs'
 
 class App extends React.Component {
-  constructor(props) {
-    super(props)
 
-    this.state = {
-      buttonList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "<-", "C",
-      "+", "-", "X", "/",
-      "CE", "(", ")", "="],
-      expression: [],
-      result: 0,
-      error: '',
-      intermediateResult: 0
+  state = {
+    result: 0,
+    error: '',
+    expression: [],
+    history: [],
+    historyPosition: 0
+  }
+
+  calculate = () => {
+    this.setState({error: ''})
+    let result = 0
+    try {
+      result = evaluate(this.state.expression.join(""))
+      this.setState({result: result}, () => {
+        let his = [...this.state.history]
+        let pos = this.state.historyPosition
+        if(this.state.history.length > 0) {
+          pos = this.state.historyPosition + 1
+        }
+        let newRecord = {expression: this.state.expression, result: this.state.result}
+        // console.log(newRecord, pos)
+        his.push(newRecord)
+        this.setState({history: his, historyPosition: pos}, () => {
+          // console.log(this.state.history)
+        })  
+      })
+    }
+    catch (error) {
+      this.setState({error: "Invalid syntax"})
+    }
+    if(!result && result !== 0) {
+      // console.log(" ??? ", result)
+      this.setState({error: "Invalid syntax"})
     }
   }
 
   handleKeyPress = (event) => {
     let code = event.key || event.which
+    console.log(code)
     let exp = [...this.state.expression]
+   
     switch(code) {
       case "1":
-        exp.push(1)
+        exp.push("1")
         this.setState({expression: exp})
         break
       case "2":
-        exp.push(2)
+        exp.push("2")
         this.setState({expression: exp})
         break
       case "3":
-        exp.push(3)
+        exp.push("3")
         this.setState({expression: exp})
         break
       case "4":
-        exp.push(4)
+        exp.push("4")
         this.setState({expression: exp})
         break
       case "5":
-        exp.push(5)
+        exp.push("5")
         this.setState({expression: exp})
         break
       case "6":
-        exp.push(6)
+        exp.push("6")
         this.setState({expression: exp})
         break
       case "7":
-        exp.push(7)
+        exp.push("7")
         this.setState({expression: exp})
         break
       case "8":
-        exp.push(8)
+        exp.push("8")
         this.setState({expression: exp})
         break
       case "9":
-        exp.push(9)
+        exp.push("9")
         this.setState({expression: exp})
         break
       case "0":
-        exp.push(0)
+        exp.push("0")
         this.setState({expression: exp})
         break
       case "+":
@@ -78,11 +102,20 @@ class App extends React.Component {
         exp.push("/")
         this.setState({expression: exp})
         break
+      case "^":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "Backspace":
+        exp.pop()
+        this.setState({expression: exp})
+        break
       case "Enter":
-        this.evaluate(this.state.expression)
+        // console.log(this.state.expression, exp)
+        this.calculate()
         break
       case "=":
-        this.evaluate(this.state.expression)
+        this.calculate()
         break
       case "(":
         exp.push("(")
@@ -101,233 +134,145 @@ class App extends React.Component {
     document.addEventListener('keydown', this.handleKeyPress)
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyPress)
+  }
+  
   handleClick = (event) => {
-  
+    let exp = [...this.state.expression]
+
     switch(event.target.name) {
-      case "=":
-        this.evaluate(this.state.expression)
+      case "0":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "1":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "2":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "3":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "4":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "5":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "6":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "7":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "8":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
       break
-      case "C":
-        this.setState({result: 0})
-        this.setState({error: ''})
+      case "9":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
       break
-      case "CE":
-        this.setState({expression: []})
-        this.setState({result: 0})
-        this.setState({error: ''})
+      case "(":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
       break
+      case ")":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "+":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "-":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "*":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "/":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
       case "<-":
-        let currentExpression = [...this.state.expression]
-        currentExpression.pop()
-        this.setState({expression: currentExpression})
-      break
+        exp.pop()
+        this.setState({expression: exp})
+        break
+      case ".":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "^":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "C":
+        this.setState({result: 0, error: ''})
+        break
+      case "CE":
+        this.setState({expression: [], result: 0, error: ''})
+        break
+      case "sin":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "cos":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
+      case "tan":
+        exp.push(event.target.value)
+        this.setState({expression: exp})
+        break
       case "ANS":
-        let res = this.state.result
-        this.setState({expression: [res]})
-      break
-      default: 
-        let newInput = event.target.value
-        let latestExpression
-        if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 0].includes(parseInt(newInput))) {
-          latestExpression = [...this.state.expression, parseInt(newInput)]
+        // copy to clip board
+        var range = document.createRange();
+        range.selectNode(document.getElementById("result"));
+        window.getSelection().removeAllRanges(); // clear current selection
+        window.getSelection().addRange(range); // to select text
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges()
+        break
+      case "=":
+        this.calculate()
+        break
+      case "back":
+        if(this.state.historyPosition > 0) {
+          let currentPosition = this.state.historyPosition - 1
+          this.setState({historyPosition: currentPosition})
+          this.setOutput(currentPosition)
         }
-        else if(newInput === "sin" || newInput === "cos" || newInput === "tan") {
-          latestExpression = [`${newInput}`, '(']
-          latestExpression = [...latestExpression,...this.state.expression]
-          latestExpression.push(")")
-          this.setState({expression: latestExpression})
+        break
+      case "forward":
+        if(this.state.history[this.state.historyPosition+1]) {
+          let currentPosition = this.state.historyPosition + 1
+          this.setState({historyPosition: currentPosition})
+          this.setOutput(currentPosition)
         }
-        else {
-          latestExpression = [...this.state.expression, newInput]
-        }
-        this.setState({expression: latestExpression})
-      break
-    }
-  }
-  
-  evaluate = (expression) => {
-    if(this.checkValidity(expression)) {
-      let exp = [...expression]
-      
-      exp = this.joinNumbers(exp)
-      let history = this.props.calculations.calc
-      console.log(history)
-      // this.props.onAddCalc({ history: })
-      let positionOfInnerOpenBracket = 0
-      let positionOfInnerMostClosedBracket = 0
-      if(exp[0] !== "(") {
-        exp.unshift("(")
-        exp.push(")")
-      }
-      for(let i = 0; i < exp.length; i++) {
-        if(exp[i] === "(") {
-          positionOfInnerOpenBracket = i
-        }
-      }
-      for(let i = positionOfInnerOpenBracket; i < exp.length; i++) {
-        if(exp[i] === ")") {
-          positionOfInnerMostClosedBracket = i
-          break
-        }
-      }
-
-      let smallestExp = []
-      for(let i = positionOfInnerOpenBracket+1; i < positionOfInnerMostClosedBracket; i++) {
-        smallestExp.push(exp[i])
-      }
-      // console.log(smallestExp, "Input to calculate()")
-      this.calculate(smallestExp, () => {
-        let intResult = this.state.intermediateResult
-        exp.splice(positionOfInnerOpenBracket, positionOfInnerMostClosedBracket-positionOfInnerOpenBracket+1, intResult)
-        // exp.splice(positionOfInnerOpenBracket, 0, )
-        if(exp.length !== 1) {
-          this.evaluate(exp)
-        }
-        else {
-          if( isNaN(exp[0])) {
-            this.setState({error: "Invalid syntax"})
-          }
-          else {
-            this.setState({result: exp[0]}, () => {
-              return exp[0]
-            })
-          }
-        }
-      })
+        break
+      default:
+        break
     }
   }
 
-  joinNumbers = (exp) => {
-    for(let i = 0; i < exp.length; i++) {
-    	let numStart
-			if(typeof exp[i] === "number" && typeof exp[i-1] !== "number") {
-      	numStart = i
-        let num = []
-        let j = numStart
-        let numEnd = numStart
-       	while(typeof exp[j] === "number") {
-        	num.push(exp[j])
-          j++
-          numEnd++
-        }
-        let number = this.createMultidigitNumber(num)
-        exp.splice(numStart, numEnd - numStart, number)
-        // console.log(exp)
-      }		
-    }
-    return exp
-  }
-
-  createMultidigitNumber = (arr) => {
-    let result = 0
-    let j, k = 0
-    for(j = arr.length-1; j >=0; j--) {
-      result += arr[j]*Math.pow(10, k)
-      k++
-    }
-    return result
-  }
-
-  calculate = (exp, cb) => {
-    let currentExp = [...exp]
-    let isSin = false, isCos = false, isTan = false
-    if(currentExp[0] === "sin") {
-      isSin = true
-    } 
-    else if(currentExp[0] === "cos") {
-      isCos = true
-    }
-    else if(currentExp[0] === "tan") {
-      isTan = true
-    }
-    let order = ["/", "X", "+", "-"]
-
-    if(currentExp.length > 2) {
-      for(let i = 0; i < order.length; i++) {
-        for(let j = 0; j < currentExp.length; j++) {
-          let result = 0
-          if(currentExp[j] === order[i]) {
-            result += this.doOp(currentExp[j-1],currentExp[j+1], order[i])
-            currentExp.splice(j-1, 3, result)
-          }
-        }
-      }
-      this.calculate(currentExp, cb)
-    }
-    else if(currentExp.length === 2) {
-      let result
-      if(isSin) {
-        result = Math.sin(currentExp[1])
-      }
-      else if(isCos) {
-        result = Math.cos(currentExp[1])
-      }
-      else if(isTan) {
-        result = Math.sin(currentExp[1])/Math.cos(currentExp[1])
-      }
-      currentExp = [result]
-      this.calculate(currentExp, cb)
-    }
-    else {
-      this.setState({intermediateResult: currentExp[0]}, function() {
-        if(typeof cb === "function") {
-          cb()
-        }
-      })
-    }
-  }
-
-doOp = (a,b, op) => {
-
-  switch (op) {
-    case "/":
-      return a/b
-    case "X":
-      return a*b
-    case "+":
-      return a+b
-    case "-":
-      return a-b
-    // case "sin":
-    //   return Math.sin(a)
-    // case "cos":
-    //   return Math.cos(a)
-    default:
-      break;
-  }
-}
-
-
-  checkValidity = (expression) => {
-
-    let openBracketsCount = 0, closeBracketsCount = 0
-    let isValid = true
-    for(let i = 0; i < expression.length; i++) {
-      if(expression[i] === "(") {
-        openBracketsCount++
-        if(typeof expression[i-1] === "number") {
-          isValid = false
-          this.setState({error:"Invalid syntax"})
-          return isValid
-        }
-      }
-      if(expression[i] === ")") {
-        closeBracketsCount++
-        if(typeof expression[i+1] === "number" || expression[i+1] === "sin" ||
-           expression[i+1] === "cos") {
-          isValid = false
-          this.setState({error:"Invalid syntax"})
-          return isValid
-        }
-      }
-    }
-    if(openBracketsCount !== closeBracketsCount) {
-      isValid = false
-      this.setState({error:"Invalid syntax"})
-      return isValid
-    }
-
-  return isValid
+  setOutput = (hisPos) => {
+    let current = this.state.history[hisPos]
+    // console.log(current)
+    let exp = current.expression
+    let res = current.result
+    this.setState({expression: exp, result: res})
   }
 
   render() {
@@ -339,62 +284,54 @@ doOp = (a,b, op) => {
             <div className={styles.expression}>
               {this.state.expression}
             </div>
-            <div className={styles.result}>
+            <div id="result" className={styles.result}>
               {this.state.error || this.state.result}
             </div>
           </div>
           <div className={styles.specialButtons}>
-            <button className={styles.btnSpecial} name="ANS" value="ANS" onClick={this.handleClick}>ANS</button>
+            <button className={styles.history} name="back" value="back" onClick={this.handleClick}>{"back"}</button>
+            <button className={styles.history} name="forward" value="forward" onClick={this.handleClick}>{"forward"}</button>
+
+          </div>
+          <div className={styles.specialButtons}>
+            <button className={styles.btnSpecial} name="ANS" value="ANS" onClick={this.handleClick}>copy</button>
             <button className={styles.btnSpecial} name="sin" value="sin" onClick={this.handleClick}>sin</button>
             <button className={styles.btnSpecial} name="cos" value="cos" onClick={this.handleClick}>cos</button> 
             <button className={styles.btnSpecial} name="tan" value="tan" onClick={this.handleClick}>tan</button> 
-
+            <button className={styles.btnSpecial} name="<-" value="<-" onClick={this.handleClick}>{"<-"}</button>
+            <button className={styles.btnSpecial} name="^" value="^" onClick={this.handleClick}>{"x^y"}</button>
           </div>
           <div className={styles.calculatorButtons}>
             <div className={styles.numbers}>
-              {this.state.buttonList.map((button, i) => (
-                typeof(button) === "number" ?
-                <button id={`${button}`}
-                        key = {i} 
-                        className={styles.btns} 
-                        name={button} value={button} 
-                        onClick={this.handleClick}
-                        >{button}
-                </button> : null
-              ))}
-              {this.state.buttonList.map((button, i) => (
-                button === "(" || button === ")" ?
-                <button id={`${button}`}
-                        key = {i} 
-                        className={styles.btns} 
-                        name={button} value={button} 
-                        onClick={this.handleClick}
-                        >{button}</button> : null
-              ))}
+              <button id={"1"} className={styles.btns} name="1" value="1" onClick={this.handleClick}>1</button>
+              <button id={"2"} className={styles.btns} name="2" value="2" onClick={this.handleClick}>2</button>
+              <button id={"3"} className={styles.btns} name="3" value="3" onClick={this.handleClick}>3</button>
+              <button id={"4"} className={styles.btns} name="4" value="4" onClick={this.handleClick}>4</button>
+              <button id={"5"} className={styles.btns} name="5" value="5" onClick={this.handleClick}>5</button>
+              <button id={"6"} className={styles.btns} name="6" value="6" onClick={this.handleClick}>6</button>
+              <button id={"7"} className={styles.btns} name="7" value="7" onClick={this.handleClick}>7</button>
+              <button id={"8"} className={styles.btns} name="8" value="8" onClick={this.handleClick}>8</button>
+              <button id={"9"} className={styles.btns} name="9" value="9" onClick={this.handleClick}>9</button>
+              <button id={"0"} className={styles.btns} name="0" value="0" onClick={this.handleClick}>0</button>
+              <button id={"("} className={styles.btns} name="(" value="(" onClick={this.handleClick}>(</button>
+              <button id={")"} className={styles.btns} name=")" value=")" onClick={this.handleClick}>)</button>
             </div>
             <div className={styles.operators}>
-              {this.state.buttonList.map((button, i) => (
-                  typeof(button) !== "number" && button !== "(" && button !== ")" ?
-                  <button id={`${button}`}
-                          key = {i} 
-                          className={styles.btns} 
-                          name={button} value={button} 
-                          onClick={this.handleClick}>{button}</button> : null
-                ))}
+              <button id={"C"} className={styles.btns} name="C" value="C" onClick={this.handleClick}>C</button>
+              <button id={"+"} className={styles.btns} name="+" value="+" onClick={this.handleClick}>{"+"}</button>
+              <button id={"-"} className={styles.btns} name="-" value="-" onClick={this.handleClick}>{"-"}</button>
+              <button id={"*"} className={styles.btns} name="*" value="*" onClick={this.handleClick}>{"*"}</button>
+              <button id={"/"} className={styles.btns} name="/" value="/" onClick={this.handleClick}>{"/"}</button>
+              <button id={"."} className={styles.btns} name="." value="." onClick={this.handleClick}>{"."}</button>
+              <button id={"CE"} className={styles.btns} name="CE" value="CE" onClick={this.handleClick}>{"CE"}</button>
+              <button id={"="} className={styles.btns} name="=" value="=" onClick={this.handleClick}>{"="}</button>
             </div>
           </div>
         </div>
       </div>
-    );
+      );
+
   }
 }
 
-const mapStateToProps = state => ({
-  calculations: state.calc
-})
-
-const mapDispatchToProps = {
-  onAddCalc: addCalculation
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
