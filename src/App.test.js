@@ -28,6 +28,6 @@ describe('Calculator', () => {
 
   it('Check buttons', () => {
     expect(component.find('.btns')).to.have.lengthOf(20);
-    expect(component.find('.btnSpecial')).to.have.lengthOf(4);
+    expect(component.find('.btnSpecial')).to.have.lengthOf(6);
   })
 })
